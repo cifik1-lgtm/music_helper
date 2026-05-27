@@ -3,295 +3,282 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Music Help</title>
+    <title>Music Helper</title>
     <style>
+        * { box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f0f2f5;
-            color: #333;
+            margin: 0; padding: 0;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
             display: flex;
             justify-content: center;
             align-items: flex-start;
-            min-height: 100vh;
-            overflow-x: hidden;
         }
-
         #app {
-            background-color: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
             padding: 30px;
             margin: 25px;
             width: 95%;
             max-width: 1100px;
-            box-sizing: border-box;
             text-align: center;
         }
-
         h1 {
-            color: #28a745; /* Green */
-            margin-bottom: 30px;
-            font-size: 2.5em;
-            font-weight: 600;
+            color: #4ecca3;
+            font-size: 2.4em;
+            font-weight: 700;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+        .subtitle { color: #888; font-size: 0.9em; margin-bottom: 25px; }
+        h2 { color: #4ecca3; font-size: 1.2em; margin: 20px 0 12px; }
+        section {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 18px 20px;
+            margin-bottom: 18px;
         }
 
-        h2 {
-            color: #555;
-            margin-top: 30px;
-            margin-bottom: 15px;
-            font-size: 1.5em;
-        }
-
-        #controls {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 30px;
-            padding: 20px;
-            background-color: #e9f5ee; /* Light green background */
-            border-radius: 10px;
-            gap: 20px;
-        }
-
-        #instrument-selector {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: center;
-            flex-grow: 1;
-        }
-
+        /* ── CONTROLS ─────────────────────────────────────── */
+        #controls { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; align-items: center; }
+        #instrument-selector { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
         .instrument-button {
-            padding: 12px 20px;
-            border: 1px solid #c8e6c9; /* Light green border */
+            padding: 9px 16px;
+            border: 1px solid rgba(78,204,163,0.3);
             border-radius: 6px;
-            background-color: #e0ffe0; /* Even lighter green */
+            background: rgba(78,204,163,0.08);
+            color: #ccc;
             cursor: pointer;
-            font-size: 0.95em;
-            font-weight: 500;
-            transition: all 0.2s ease;
-            color: #333;
-            outline: none;
+            font-size: 0.9em;
+            transition: all 0.2s;
         }
+        .instrument-button:hover { background: rgba(78,204,163,0.2); color: #fff; }
+        .instrument-button.active { background: #4ecca3; color: #1a1a2e; font-weight: bold; border-color: #4ecca3; }
 
-        .instrument-button:hover {
-            background-color: #d0f0d0;
-            border-color: #a3d9a3;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        /* ── TRANSPOSE ───────────────────────────────────── */
+        #transpose-row {
+            display: flex; align-items: center; gap: 10px; justify-content: center; flex-wrap: wrap;
         }
-
-        .instrument-button.active {
-            background-color: #28a745; /* Darker green */
-            color: white;
-            border-color: #28a745;
+        #transpose-row label { color: #aaa; font-size: 0.9em; }
+        .transpose-btn {
+            width: 34px; height: 34px;
+            background: rgba(78,204,163,0.15);
+            border: 1px solid rgba(78,204,163,0.4);
+            border-radius: 6px;
+            color: #4ecca3;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .transpose-btn:hover { background: rgba(78,204,163,0.35); }
+        #semitone-display {
+            min-width: 60px;
+            text-align: center;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 6px;
+            padding: 4px 10px;
+            color: #4ecca3;
             font-weight: bold;
-            box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3);
         }
 
-        #volume-control {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-top: 10px;
-        }
-
+        /* ── VOLUME ──────────────────────────────────────── */
+        #volume-control { display: flex; align-items: center; gap: 10px; color: #aaa; font-size: 0.9em; }
         #masterVolume {
-            width: 180px;
-            -webkit-appearance: none;
-            height: 8px;
-            background: #d8eadc; /* Light green track */
-            border-radius: 5px;
-            outline: none;
-            transition: opacity .2s;
+            width: 150px; -webkit-appearance: none;
+            height: 6px; background: rgba(78,204,163,0.2);
+            border-radius: 5px; outline: none;
         }
-
         #masterVolume::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: #28a745; /* Green thumb */
-            cursor: pointer;
-            box-shadow: 0 0 4px rgba(0,0,0,0.3);
+            -webkit-appearance: none; width: 18px; height: 18px;
+            border-radius: 50%; background: #4ecca3; cursor: pointer;
         }
+        #masterVolume::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; background: #4ecca3; cursor: pointer; }
 
-        #masterVolume::-moz-range-thumb {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: #28a745;
-            cursor: pointer;
-        }
-
+        /* ── KEYBOARD ────────────────────────────────────── */
+        #keyboard-wrap { overflow-x: auto; padding-bottom: 10px; }
         #keyboard {
             display: flex;
             justify-content: center;
-            margin-top: 30px;
             padding-bottom: 25px;
             position: relative;
             user-select: none;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
+            min-width: 560px;
         }
-
         .key {
-            width: 50px;
-            height: 160px;
-            background-color: #ffffff;
+            width: 50px; height: 160px;
+            background: linear-gradient(180deg, #f5f5f5 0%, #e8e8e8 100%);
             border: 1px solid #bbb;
             border-radius: 0 0 8px 8px;
-            box-shadow: 2px 2px 8px rgba(0,0,0,0.15);
+            box-shadow: 2px 4px 10px rgba(0,0,0,0.4);
             position: relative;
-            margin: 0 -1px; /* Overlap borders slightly */
+            margin: 0 -1px;
             cursor: pointer;
             display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            padding-bottom: 12px;
-            font-size: 0.9em;
-            color: #333;
-            transition: background-color 0.1s ease;
-            z-index: 0; /* Ensure white keys are behind black keys */
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            padding-bottom: 8px;
+            transition: background 0.08s, transform 0.08s;
+            z-index: 0;
         }
-
         .key.black {
-            width: 35px;
-            height: 100px;
-            background-color: #222;
+            width: 35px; height: 105px;
+            background: linear-gradient(180deg, #333 0%, #111 100%);
             border: 1px solid #000;
             position: absolute;
-            z-index: 1; /* Black keys on top */
+            z-index: 1;
             top: 0;
-            margin-left: -17.5px; /* Half of its width */
-            color: #eee;
-            box-shadow: 2px 2px 8px rgba(0,0,0,0.3);
-            font-size: 0.8em;
-            padding-bottom: 8px;
-            transition: background-color 0.1s ease;
+            margin-left: -17.5px;
+            color: #ddd;
+            box-shadow: 2px 4px 12px rgba(0,0,0,0.6);
+            padding-bottom: 6px;
         }
-
         .key:active, .key.active-play {
-            background-color: #b3e0ff; /* Light blue for active white keys */
-            box-shadow: inset 1px 1px 5px rgba(0,0,0,0.2);
-            transform: translateY(1px);
+            background: linear-gradient(180deg, #a8f0d8 0%, #7de0bf 100%);
+            transform: translateY(2px);
+            box-shadow: 1px 2px 5px rgba(0,0,0,0.3);
         }
         .key.black:active, .key.black.active-play {
-            background-color: #444; /* Darker gray for active black keys */
-            box-shadow: inset 1px 1px 5px rgba(0,0,0,0.3);
-            transform: translateY(1px);
+            background: linear-gradient(180deg, #2a5a48 0%, #1a3a30 100%);
+            transform: translateY(2px);
         }
 
-        /* Adjust positions for black keys (relative to their previous white key) */
-        .key[data-note="C#4"] { left: calc(50px * 1 - 17.5px); } /* Between C4 and D4 */
-        .key[data-note="D#4"] { left: calc(50px * 2 - 17.5px); } /* Between D4 and E4 */
-        .key[data-note="F#4"] { left: calc(50px * 4 - 17.5px); } /* Between F4 and G4 */
-        .key[data-note="G#4"] { left: calc(50px * 5 - 17.5px); } /* Between G4 and A4 */
-        .key[data-note="A#4"] { left: calc(50px * 6 - 17.5px); } /* Between A4 and B4 */
-        .key[data-note="C#5"] { left: calc(50px * 8 - 17.5px); } /* Between C5 and D5 */
-        .key[data-note="D#5"] { left: calc(50px * 9 - 17.5px); } /* Between D5 and E5 */
-
-
-        #microphone-section {
-            margin-top: 40px;
-            padding: 25px;
-            background-color: #f0f7f0; /* Very light green */
-            border-radius: 10px;
-            text-align: center;
-            border: 1px solid #e0ffe0;
-        }
-
-        #toggleMic {
-            padding: 12px 25px;
-            font-size: 1.05em;
-            background-color: #007bff; /* Blue */
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background-color 0.2s, box-shadow 0.2s;
-            outline: none;
-        }
-
-        #toggleMic:hover {
-            background-color: #0056b3;
-            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
-        }
-
-        #micStatus {
-            margin-top: 15px;
-            font-weight: 600;
+        /* Editable note label on key */
+        .key-label {
+            font-size: 0.72em;
             color: #555;
-        }
-
-        #visualizer {
-            background-color: #333;
-            border-radius: 5px;
-            margin-top: 20px;
+            text-align: center;
+            cursor: text;
+            padding: 2px 3px;
+            border-radius: 3px;
+            border: 1px solid transparent;
             width: 100%;
-            height: 120px;
-            max-width: 500px;
-            border: 1px solid #555;
-            display: block; /* Center the canvas */
+            background: transparent;
+            line-height: 1.2;
+        }
+        .key.black .key-label { color: #bbb; }
+        .key-label:focus {
+            outline: none;
+            border: 1px solid #4ecca3;
+            background: rgba(0,0,0,0.15);
+            color: #333;
+        }
+        .key.black .key-label:focus { color: #eee; background: rgba(255,255,255,0.1); }
+        .kbd-hint {
+            font-size: 0.65em;
+            color: #999;
+            font-weight: bold;
+        }
+        .key.black .kbd-hint { color: #888; }
+
+        /* Black key positions */
+        .key[data-note-id="1"]  { left: calc(50px * 1  - 17.5px); }
+        .key[data-note-id="2"]  { left: calc(50px * 2  - 17.5px); }
+        .key[data-note-id="3"]  { left: calc(50px * 4  - 17.5px); }
+        .key[data-note-id="4"]  { left: calc(50px * 5  - 17.5px); }
+        .key[data-note-id="5"]  { left: calc(50px * 6  - 17.5px); }
+        .key[data-note-id="6"]  { left: calc(50px * 8  - 17.5px); }
+        .key[data-note-id="7"]  { left: calc(50px * 9  - 17.5px); }
+
+        /* ── MIC SECTION ─────────────────────────────────── */
+        #mic-btn {
+            padding: 10px 22px;
+            background: rgba(52,152,219,0.2);
+            border: 1px solid rgba(52,152,219,0.5);
+            border-radius: 8px;
+            color: #3498db;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.2s;
+        }
+        #mic-btn:hover { background: rgba(52,152,219,0.35); }
+        #mic-btn.active { background: #3498db; color: #fff; border-color: #3498db; }
+        #micStatus { margin-top: 10px; font-size: 0.9em; color: #888; }
+        #visualizer {
+            background: #111;
+            border-radius: 6px;
+            margin-top: 14px;
+            width: 100%;
+            height: 90px;
+            max-width: 520px;
+            display: block;
             margin-left: auto;
             margin-right: auto;
+            border: 1px solid rgba(255,255,255,0.08);
         }
 
-        @media (max-width: 768px) {
-            #app {
-                margin: 15px;
-                padding: 20px;
-            }
-            h1 {
-                font-size: 2em;
-            }
-            .instrument-button {
-                padding: 10px 15px;
-                font-size: 0.9em;
-            }
-            #controls {
-                flex-direction: column;
-                gap: 15px;
-            }
-            #masterVolume {
-                width: 120px;
-            }
-            .key {
-                width: 40px;
-                height: 130px;
-                font-size: 0.8em;
-                padding-bottom: 8px;
-            }
-            .key.black {
-                width: 28px;
-                height: 80px;
-                font-size: 0.7em;
-                padding-bottom: 5px;
-                margin-left: -14px;
-            }
-             /* Re-adjust positions for black keys based on new white key width */
-            .key[data-note="C#4"] { left: calc(40px * 1 - 14px); }
-            .key[data-note="D#4"] { left: calc(40px * 2 - 14px); }
-            .key[data-note="F#4"] { left: calc(40px * 4 - 14px); }
-            .key[data-note="G#4"] { left: calc(40px * 5 - 14px); }
-            .key[data-note="A#4"] { left: calc(40px * 6 - 14px); }
-            .key[data-note="C#5"] { left: calc(40px * 8 - 14px); }
-            .key[data-note="D#5"] { left: calc(40px * 9 - 14px); }
-
-            #visualizer {
-                height: 80px;
-            }
+        /* ── RECORDING SECTION ───────────────────────────── */
+        #recording-section { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+        .rec-row { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+        #rec-btn {
+            padding: 10px 24px;
+            background: rgba(231,76,60,0.15);
+            border: 1px solid rgba(231,76,60,0.5);
+            border-radius: 8px;
+            color: #e74c3c;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: flex; align-items: center; gap: 8px;
         }
+        #rec-btn:hover { background: rgba(231,76,60,0.3); }
+        #rec-btn.recording { background: #e74c3c; color: #fff; border-color: #e74c3c; animation: pulse 1s infinite; }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.7} }
+        #rec-dot { width: 10px; height: 10px; border-radius: 50%; background: currentColor; }
+        #rec-status { font-size: 0.85em; color: #888; }
+        #rec-timer { font-size: 1.1em; font-weight: bold; color: #e74c3c; display: none; }
+
+        .rec-option-group {
+            display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;
+        }
+        .rec-option {
+            display: flex; align-items: center; gap: 6px;
+            font-size: 0.9em; color: #aaa; cursor: pointer;
+        }
+        .rec-option input[type=checkbox] { accent-color: #4ecca3; width: 16px; height: 16px; }
+
+        #recordings-list { width: 100%; max-width: 600px; }
+        .recording-item {
+            display: flex; align-items: center; justify-content: space-between;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin-top: 8px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .recording-item audio { flex: 1; min-width: 200px; height: 32px; }
+        .recording-item .rec-name { font-size: 0.85em; color: #aaa; }
+        .dl-btn {
+            padding: 6px 14px;
+            background: rgba(78,204,163,0.15);
+            border: 1px solid rgba(78,204,163,0.4);
+            border-radius: 6px;
+            color: #4ecca3;
+            text-decoration: none;
+            font-size: 0.85em;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .dl-btn:hover { background: rgba(78,204,163,0.3); }
     </style>
 </head>
 <body>
-    <div id="app">
-        <h1>Music Help</h1>
+<div id="app">
+    <h1>🎵 Music Helper</h1>
+    <p class="subtitle">Virtual instruments · Editable keys · Recording · Microphone</p>
 
+    <!-- INSTRUMENTS + VOLUME -->
+    <section>
+        <h2>Instrument & Volume</h2>
         <div id="controls">
             <div id="instrument-selector">
                 <button class="instrument-button active" data-instrument="piano">Piano</button>
@@ -307,484 +294,539 @@
                 <button class="instrument-button" data-instrument="drums_hihat">Hi-Hat</button>
             </div>
             <div id="volume-control">
-                <label for="masterVolume">Master Volume:</label>
+                <label for="masterVolume">🔊</label>
                 <input type="range" id="masterVolume" min="0" max="1" step="0.01" value="0.7">
             </div>
         </div>
+    </section>
 
-        <h2>Virtual Keyboard</h2>
-        <div id="keyboard">
-            <!-- White Keys (C4 to E5) -->
-            <div class="key" data-note="C4">C4</div>
-            <div class="key" data-note="D4">D4</div>
-            <div class="key" data-note="E4">E4</div>
-            <div class="key" data-note="F4">F4</div>
-            <div class="key" data-note="G4">G4</div>
-            <div class="key" data-note="A4">A4</div>
-            <div class="key" data-note="B4">B4</div>
-            <div class="key" data-note="C5">C5</div>
-            <div class="key" data-note="D5">D5</div>
-            <div class="key" data-note="E5">E5</div>
-
-            <!-- Black Keys (Sharps and Flats) -->
-            <div class="key black" data-note="C#4">C#4</div>
-            <div class="key black" data-note="D#4">D#4</div>
-            <div class="key black" data-note="F#4">F#4</div>
-            <div class="key black" data-note="G#4">G#4</div>
-            <div class="key black" data-note="A#4">A#4</div>
-            <div class="key black" data-note="C#5">C#5</div>
-            <div class="key black" data-note="D#5">D#5</div>
+    <!-- TRANSPOSE -->
+    <section>
+        <h2>Transpose / Key</h2>
+        <div id="transpose-row">
+            <label>Shift all keys by:</label>
+            <button class="transpose-btn" id="btn-down">−</button>
+            <div id="semitone-display">0</div>
+            <button class="transpose-btn" id="btn-up">+</button>
+            <label>semitones</label>
+            <button class="transpose-btn" id="btn-reset" title="Reset to 0" style="font-size:0.85em;width:auto;padding:0 10px;">Reset</button>
         </div>
+        <p style="font-size:0.8em;color:#666;margin-top:8px;">
+            Tip: You can also double-click any key label below to type a custom note (e.g. "G3", "A#5")
+        </p>
+    </section>
 
-        <div id="microphone-section">
-            <h2>Voice / Microphone Input</h2>
-            <button id="toggleMic">Start Microphone Input</button>
-            <p id="micStatus">Microphone: Off</p>
-            <canvas id="visualizer"></canvas>
+    <!-- KEYBOARD -->
+    <section>
+        <h2>Virtual Keyboard <span style="font-size:0.7em;color:#666;">— double-click a label to edit the note</span></h2>
+        <div id="keyboard-wrap">
+            <div id="keyboard">
+                <!-- White Keys -->
+                <div class="key" data-key-index="0"><span class="kbd-hint">A</span><input class="key-label" value="C4" title="Double-click to edit note"></div>
+                <div class="key" data-key-index="1"><span class="kbd-hint">S</span><input class="key-label" value="D4" title="Double-click to edit note"></div>
+                <div class="key" data-key-index="2"><span class="kbd-hint">D</span><input class="key-label" value="E4" title="Double-click to edit note"></div>
+                <div class="key" data-key-index="3"><span class="kbd-hint">F</span><input class="key-label" value="F4" title="Double-click to edit note"></div>
+                <div class="key" data-key-index="4"><span class="kbd-hint">G</span><input class="key-label" value="G4" title="Double-click to edit note"></div>
+                <div class="key" data-key-index="5"><span class="kbd-hint">H</span><input class="key-label" value="A4" title="Double-click to edit note"></div>
+                <div class="key" data-key-index="6"><span class="kbd-hint">J</span><input class="key-label" value="B4" title="Double-click to edit note"></div>
+                <div class="key" data-key-index="7"><span class="kbd-hint">K</span><input class="key-label" value="C5" title="Double-click to edit note"></div>
+                <div class="key" data-key-index="8"><span class="kbd-hint">L</span><input class="key-label" value="D5" title="Double-click to edit note"></div>
+                <div class="key" data-key-index="9"><span class="kbd-hint">;</span><input class="key-label" value="E5" title="Double-click to edit note"></div>
+                <!-- Black Keys -->
+                <div class="key black" data-key-index="10" data-note-id="1"><span class="kbd-hint">W</span><input class="key-label" value="C#4"></div>
+                <div class="key black" data-key-index="11" data-note-id="2"><span class="kbd-hint">E</span><input class="key-label" value="D#4"></div>
+                <div class="key black" data-key-index="12" data-note-id="3"><span class="kbd-hint">T</span><input class="key-label" value="F#4"></div>
+                <div class="key black" data-key-index="13" data-note-id="4"><span class="kbd-hint">Y</span><input class="key-label" value="G#4"></div>
+                <div class="key black" data-key-index="14" data-note-id="5"><span class="kbd-hint">U</span><input class="key-label" value="A#4"></div>
+                <div class="key black" data-key-index="15" data-note-id="6"><span class="kbd-hint">O</span><input class="key-label" value="C#5"></div>
+                <div class="key black" data-key-index="16" data-note-id="7"><span class="kbd-hint">P</span><input class="key-label" value="D#5"></div>
+            </div>
         </div>
-    </div>
+    </section>
 
-    <script>
-        let audioContext;
-        let masterGain;
-        let activeInstrument = 'piano';
-        const activeOscillators = new Map(); // Stores {note: {osc, gainNode}} for sustained notes
-        let micStream = null;
-        let micSource = null;
-        let analyser = null;
-        let visualizerCanvas;
-        let visualizerCtx;
-        let animationFrameId;
+    <!-- RECORDING -->
+    <section>
+        <h2>🔴 Recording</h2>
+        <div id="recording-section">
+            <div class="rec-option-group">
+                <label class="rec-option"><input type="checkbox" id="rec-instrument" checked> Record Instrument</label>
+                <label class="rec-option"><input type="checkbox" id="rec-mic"> Record Microphone</label>
+            </div>
+            <div class="rec-row">
+                <button id="rec-btn"><span id="rec-dot"></span><span id="rec-btn-label">Start Recording</span></button>
+                <div id="rec-timer">00:00</div>
+            </div>
+            <div id="rec-status">Press "Start Recording" to capture your performance.</div>
+            <div id="recordings-list"></div>
+        </div>
+    </section>
 
-        // Instrument definitions with ADSR envelope parameters, waveform, initial volume, and optional detune/octave offset
-        const instruments = {
-            piano: { waveform: 'sawtooth', attack: 0.01, decay: 0.8, sustain: 0.1, release: 0.1, volume: 0.5 },
-            violin: { waveform: 'sawtooth', attack: 0.3, decay: 1.2, sustain: 0.7, release: 0.5, volume: 0.6, detune: 5 }, // Slight detune for vibrato effect
-            guitar: { waveform: 'triangle', attack: 0.02, decay: 0.4, sustain: 0.05, release: 0.05, volume: 0.7 },
-            electric_guitar: { waveform: 'square', attack: 0.01, decay: 0.3, sustain: 0.1, release: 0.1, volume: 0.7, detune: 10 }, // More edgy sound
-            bass: { waveform: 'sine', attack: 0.05, decay: 0.6, sustain: 0.4, release: 0.2, volume: 0.8, octaveOffset: -1 }, // Play an octave lower
-            trumpet: { waveform: 'square', attack: 0.1, decay: 0.5, sustain: 0.6, release: 0.3, volume: 0.6, detune: 15 }, // Brassy sound
-            recorder: { waveform: 'triangle', attack: 0.05, decay: 0.4, sustain: 0.5, release: 0.2, volume: 0.7 },
-            keypad: { waveform: 'sine', attack: 0.01, decay: 0.1, sustain: 0.0, release: 0.01, volume: 0.4 }, // Short, clean plink
-        };
+    <!-- MICROPHONE -->
+    <section>
+        <h2>🎙️ Microphone Input</h2>
+        <button id="mic-btn">Start Microphone</button>
+        <p id="micStatus">Microphone: Off</p>
+        <canvas id="visualizer"></canvas>
+    </section>
+</div>
 
-        // Base frequencies for the 4th octave (e.g., A4 is 440 Hz)
-        const baseNoteFrequencies = {
-            'C': 261.63, 'C#': 277.18, 'D': 293.66, 'D#': 311.13, 'E': 329.63, 'F': 349.23,
-            'F#': 369.99, 'G': 392.00, 'G#': 415.30, 'A': 440.00, 'A#': 466.16, 'B': 493.88
-        };
+<script>
+// ═══════════════════════════════════════════════════
+//  AUDIO ENGINE
+// ═══════════════════════════════════════════════════
+let audioContext, masterGain, recordingDest;
+let activeInstrument = 'piano';
+const activeOscillators = new Map();
 
-        /**
-         * Calculates the frequency for a given note (e.g., "C4", "G#5").
-         * @param {string} note The note string (e.g., "C4").
-         * @returns {number} The frequency in Hz.
-         */
-        function getFrequency(note) {
-            const regex = /([A-G]#?)(\d)/;
-            const match = note.match(regex);
-            if (!match) {
-                console.warn(`Invalid note format: ${note}`);
-                return 0;
+const instruments = {
+    piano:          { waveform: 'sawtooth',  attack: 0.01, decay: 0.8,  sustain: 0.1, release: 0.1,  volume: 0.5 },
+    violin:         { waveform: 'sawtooth',  attack: 0.3,  decay: 1.2,  sustain: 0.7, release: 0.5,  volume: 0.6, detune: 5 },
+    guitar:         { waveform: 'triangle',  attack: 0.02, decay: 0.4,  sustain: 0.05, release: 0.05, volume: 0.7 },
+    electric_guitar:{ waveform: 'square',    attack: 0.01, decay: 0.3,  sustain: 0.1, release: 0.1,  volume: 0.7, detune: 10 },
+    bass:           { waveform: 'sine',      attack: 0.05, decay: 0.6,  sustain: 0.4, release: 0.2,  volume: 0.8, octaveOffset: -1 },
+    trumpet:        { waveform: 'square',    attack: 0.1,  decay: 0.5,  sustain: 0.6, release: 0.3,  volume: 0.6, detune: 15 },
+    recorder:       { waveform: 'triangle',  attack: 0.05, decay: 0.4,  sustain: 0.5, release: 0.2,  volume: 0.7 },
+    keypad:         { waveform: 'sine',      attack: 0.01, decay: 0.1,  sustain: 0.0, release: 0.01, volume: 0.4 },
+};
+
+const baseNoteFreqs = {
+    'C':261.63,'C#':277.18,'D':293.66,'D#':311.13,'E':329.63,
+    'F':349.23,'F#':369.99,'G':392.00,'G#':415.30,'A':440.00,'A#':466.16,'B':493.88
+};
+
+// All chromatic notes in order for semitone shifting
+const CHROMATIC = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+
+function getFrequency(note) {
+    const m = note.match(/([A-G]#?)(\d)/);
+    if (!m) return 0;
+    const base = baseNoteFreqs[m[1]];
+    return base * Math.pow(2, parseInt(m[2]) - 4);
+}
+
+function initAudio() {
+    if (!audioContext || audioContext.state === 'suspended') {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        masterGain = audioContext.createGain();
+        masterGain.gain.value = parseFloat(document.getElementById('masterVolume').value);
+        recordingDest = audioContext.createMediaStreamDestination();
+        masterGain.connect(audioContext.destination);
+        masterGain.connect(recordingDest);
+    }
+}
+
+function playNote(note, instrumentName = activeInstrument) {
+    initAudio();
+    const instr = instruments[instrumentName];
+    if (!instr) return;
+    let freq = getFrequency(note);
+    if (!freq) return;
+    if (instr.octaveOffset) freq *= Math.pow(2, instr.octaveOffset);
+    if (activeOscillators.has(note)) stopNote(note, instrumentName);
+    const now = audioContext.currentTime;
+    const osc = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+    osc.type = instr.waveform;
+    osc.frequency.setValueAtTime(freq, now);
+    if (instr.detune) osc.detune.setValueAtTime(instr.detune, now);
+    gain.gain.setValueAtTime(0, now);
+    gain.gain.linearRampToValueAtTime(instr.volume, now + instr.attack);
+    gain.gain.exponentialRampToValueAtTime(instr.volume * (instr.sustain || 0.01), now + instr.attack + instr.decay);
+    osc.connect(gain); gain.connect(masterGain);
+    osc.start(now);
+    activeOscillators.set(note, { osc, gain });
+}
+
+function stopNote(note, instrumentName = activeInstrument) {
+    if (!audioContext) return;
+    const active = activeOscillators.get(note);
+    if (!active) return;
+    const instr = instruments[instrumentName];
+    if (!instr) return;
+    const { osc, gain } = active;
+    const now = audioContext.currentTime;
+    gain.gain.cancelScheduledValues(now);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + instr.release);
+    osc.stop(now + instr.release);
+    osc.onended = () => { osc.disconnect(); gain.disconnect(); };
+    activeOscillators.delete(note);
+}
+
+let whiteNoiseBuffer = null;
+function getWhiteNoise() {
+    if (!whiteNoiseBuffer) {
+        const sz = audioContext.sampleRate * 0.5;
+        whiteNoiseBuffer = audioContext.createBuffer(1, sz, audioContext.sampleRate);
+        const d = whiteNoiseBuffer.getChannelData(0);
+        for (let i = 0; i < sz; i++) d[i] = Math.random() * 2 - 1;
+    }
+    return whiteNoiseBuffer;
+}
+
+function playDrum(type) {
+    initAudio();
+    const now = audioContext.currentTime;
+    const g = audioContext.createGain();
+    g.connect(masterGain);
+    if (type === 'drums_kick') {
+        const o = audioContext.createOscillator();
+        o.type = 'sine';
+        o.frequency.setValueAtTime(120, now);
+        o.frequency.exponentialRampToValueAtTime(30, now + 0.2);
+        g.gain.setValueAtTime(1, now);
+        g.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+        o.connect(g); o.start(now); o.stop(now + 0.3);
+    } else if (type === 'drums_snare') {
+        const nb = audioContext.createBufferSource();
+        nb.buffer = getWhiteNoise();
+        const nf = audioContext.createBiquadFilter();
+        nf.type = 'bandpass'; nf.frequency.value = 2000;
+        nb.connect(nf); nf.connect(g);
+        const to = audioContext.createOscillator();
+        to.type = 'triangle'; to.frequency.value = 200;
+        to.connect(g);
+        g.gain.setValueAtTime(0.7, now);
+        g.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+        nb.start(now); nb.stop(now + 0.2);
+        to.start(now); to.stop(now + 0.2);
+    } else if (type === 'drums_hihat') {
+        const hb = audioContext.createBufferSource();
+        hb.buffer = getWhiteNoise();
+        const hf = audioContext.createBiquadFilter();
+        hf.type = 'highpass'; hf.frequency.value = 7000;
+        hb.connect(hf); hf.connect(g);
+        g.gain.setValueAtTime(0.5, now);
+        g.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+        hb.start(now); hb.stop(now + 0.1);
+    }
+}
+
+// ═══════════════════════════════════════════════════
+//  KEY MAP & TRANSPOSE
+// ═══════════════════════════════════════════════════
+// base notes for each key index (0-16)
+const DEFAULT_NOTES = [
+    'C4','D4','E4','F4','G4','A4','B4','C5','D5','E5',       // white 0-9
+    'C#4','D#4','F#4','G#4','A#4','C#5','D#5'                // black 10-16
+];
+
+// keyboard physical key for each index
+const KEY_CHARS = ['a','s','d','f','g','h','j','k','l',';','w','e','t','y','u','o','p'];
+// reverse map: char -> key index
+const charToIdx = {};
+KEY_CHARS.forEach((c, i) => charToIdx[c] = i);
+
+let semitoneOffset = 0;
+const pressedKeys = new Set();
+
+function getKeyNote(idx) {
+    const label = document.querySelectorAll('.key')[idx].querySelector('.key-label');
+    return label ? label.value.trim() : '';
+}
+
+function shiftNote(note, semitones) {
+    const m = note.match(/([A-G]#?)(\d)/);
+    if (!m) return note;
+    const chrIdx = CHROMATIC.indexOf(m[1]);
+    if (chrIdx === -1) return note;
+    let oct = parseInt(m[2]);
+    let newIdx = chrIdx + semitones;
+    while (newIdx < 0)  { newIdx += 12; oct--; }
+    while (newIdx >= 12){ newIdx -= 12; oct++; }
+    return CHROMATIC[newIdx] + oct;
+}
+
+function applyTranspose(delta) {
+    semitoneOffset += delta;
+    document.getElementById('semitone-display').textContent = (semitoneOffset >= 0 ? '+' : '') + semitoneOffset;
+    document.querySelectorAll('.key').forEach((key, idx) => {
+        const input = key.querySelector('.key-label');
+        if (!input) return;
+        const shifted = shiftNote(DEFAULT_NOTES[idx], semitoneOffset);
+        input.value = shifted;
+    });
+}
+
+function resetTranspose() {
+    semitoneOffset = 0;
+    document.getElementById('semitone-display').textContent = '0';
+    document.querySelectorAll('.key').forEach((key, idx) => {
+        const input = key.querySelector('.key-label');
+        if (input) input.value = DEFAULT_NOTES[idx];
+    });
+}
+
+// ═══════════════════════════════════════════════════
+//  MICROPHONE
+// ═══════════════════════════════════════════════════
+let micStream = null, micSource = null, analyser = null, animId = null;
+
+async function toggleMic() {
+    initAudio();
+    const btn = document.getElementById('mic-btn');
+    const status = document.getElementById('micStatus');
+    const canvas = document.getElementById('visualizer');
+    const ctx2d = canvas.getContext('2d');
+
+    if (micStream) {
+        micStream.getTracks().forEach(t => t.stop());
+        micStream = null;
+        if (micSource) micSource.disconnect();
+        if (analyser) analyser.disconnect();
+        cancelAnimationFrame(animId);
+        btn.textContent = 'Start Microphone';
+        btn.classList.remove('active');
+        status.textContent = 'Microphone: Off';
+        ctx2d.clearRect(0, 0, canvas.width, canvas.height);
+        ctx2d.fillStyle = '#111';
+        ctx2d.fillRect(0, 0, canvas.width, canvas.height);
+    } else {
+        try {
+            micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            micSource = audioContext.createMediaStreamSource(micStream);
+            analyser = audioContext.createAnalyser();
+            analyser.fftSize = 256;
+            micSource.connect(analyser);
+            // Also route mic to recording destination if recording
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                micSource.connect(recordingDest);
             }
-
-            const noteName = match[1]; // e.g., "C", "C#"
-            const octave = parseInt(match[2], 10); // e.g., 4, 5
-            let baseFreq = baseNoteFrequencies[noteName];
-
-            // Adjust frequency based on octave relative to octave 4 (where baseNoteFrequencies are defined)
-            const octaveDifference = octave - 4;
-            return baseFreq * Math.pow(2, octaveDifference);
+            btn.textContent = 'Stop Microphone';
+            btn.classList.add('active');
+            status.textContent = 'Microphone: On';
+            drawViz(analyser, ctx2d, canvas);
+        } catch (e) {
+            status.textContent = 'Error: ' + e.message;
         }
+    }
+}
 
-        /**
-         * Initializes the AudioContext and master gain node if not already done.
-         * This function should be called after a user gesture to comply with browser autoplay policies.
-         */
-        function initializeAudioContext() {
-            if (!audioContext || audioContext.state === 'suspended') {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                masterGain = audioContext.createGain();
-                masterGain.gain.value = parseFloat(document.getElementById('masterVolume').value);
-                masterGain.connect(audioContext.destination);
-                console.log('AudioContext initialized or resumed.');
-            }
-        }
+function drawViz(analyser, ctx2d, canvas) {
+    animId = requestAnimationFrame(() => drawViz(analyser, ctx2d, canvas));
+    const buf = new Uint8Array(analyser.frequencyBinCount);
+    analyser.getByteFrequencyData(buf);
+    ctx2d.clearRect(0, 0, canvas.width, canvas.height);
+    ctx2d.fillStyle = '#111';
+    ctx2d.fillRect(0, 0, canvas.width, canvas.height);
+    const bw = (canvas.width / buf.length) * 2.5;
+    let x = 0;
+    for (let i = 0; i < buf.length; i++) {
+        const h = buf[i] / 2;
+        const g = ctx2d.createLinearGradient(0, canvas.height - h, 0, canvas.height);
+        g.addColorStop(0, '#4ecca3');
+        g.addColorStop(1, '#1a7a5a');
+        ctx2d.fillStyle = g;
+        ctx2d.fillRect(x, canvas.height - h, bw, h);
+        x += bw + 1;
+    }
+}
 
-        /**
-         * Plays a musical note using the currently active instrument or a specified one.
-         * Applies a basic ADSR envelope.
-         * @param {string} note The note to play (e.g., "C4").
-         * @param {string} [instrumentName=activeInstrument] The instrument to use.
-         */
-        function playNote(note, instrumentName = activeInstrument) {
-            initializeAudioContext();
-            const instrument = instruments[instrumentName];
-            if (!instrument) {
-                console.warn(`Instrument '${instrumentName}' not found.`);
-                return;
-            }
+// ═══════════════════════════════════════════════════
+//  RECORDING
+// ═══════════════════════════════════════════════════
+let mediaRecorder = null, recChunks = [], recTimer = null, recSeconds = 0, recCount = 0;
 
-            let frequency = getFrequency(note);
-            if (instrument.octaveOffset) {
-                frequency *= Math.pow(2, instrument.octaveOffset);
-            }
+function formatTime(s) {
+    return String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0');
+}
 
-            // Stop any existing oscillator for this note to retrigger the sound
-            if (activeOscillators.has(note)) {
-                stopNote(note, instrumentName);
-            }
+async function toggleRecording() {
+    initAudio();
+    const btn = document.getElementById('rec-btn');
+    const label = document.getElementById('rec-btn-label');
+    const status = document.getElementById('rec-status');
+    const timerEl = document.getElementById('rec-timer');
+    const recMic = document.getElementById('rec-mic').checked;
 
-            const now = audioContext.currentTime;
+    if (mediaRecorder && mediaRecorder.state === 'recording') {
+        // STOP
+        mediaRecorder.stop();
+        clearInterval(recTimer);
+        btn.classList.remove('recording');
+        label.textContent = 'Start Recording';
+        timerEl.style.display = 'none';
+        status.textContent = 'Processing recording...';
+    } else {
+        // START
+        recChunks = [];
+        let streams = [];
 
-            const osc = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
+        // Instrument audio (from Web Audio)
+        streams.push(recordingDest.stream);
 
-            osc.type = instrument.waveform;
-            osc.frequency.setValueAtTime(frequency, now);
-            if (instrument.detune) {
-                osc.detune.setValueAtTime(instrument.detune, now);
-            }
-
-            // ADSR Envelope
-            gainNode.gain.setValueAtTime(0, now);
-            gainNode.gain.linearRampToValueAtTime(instrument.volume, now + instrument.attack);
-            gainNode.gain.exponentialRampToValueAtTime(instrument.volume * instrument.sustain, now + instrument.attack + instrument.decay);
-
-            osc.connect(gainNode);
-            gainNode.connect(masterGain);
-            osc.start(now);
-
-            activeOscillators.set(note, { osc, gainNode }); // Store for stopping
-        }
-
-        /**
-         * Stops a playing musical note, applying the release phase of the ADSR envelope.
-         * @param {string} note The note to stop.
-         * @param {string} [instrumentName=activeInstrument] The instrument used for the note.
-         */
-        function stopNote(note, instrumentName = activeInstrument) {
-            if (!audioContext || audioContext.state === 'suspended') return;
-            const active = activeOscillators.get(note);
-            if (!active) return;
-
-            const { osc, gainNode } = active;
-            const instrument = instruments[instrumentName];
-            if (!instrument) return;
-
-            const now = audioContext.currentTime;
-            gainNode.gain.cancelScheduledValues(now); // Clear any pending ramps
-            gainNode.gain.exponentialRampToValueAtTime(0.0001, now + instrument.release); // Fade out
-            osc.stop(now + instrument.release); // Stop oscillator after release phase
-            
-            // Clean up nodes after they have finished playing
-            osc.onended = () => {
-                osc.disconnect();
-                gainNode.disconnect();
-            };
-            activeOscillators.delete(note);
-        }
-
-        let whiteNoiseBuffer = null;
-        /**
-         * Creates a static white noise buffer for drum sounds.
-         */
-        function createWhiteNoiseBuffer() {
-            if (!audioContext) { // Ensure audio context is initialized before creating buffer
-                initializeAudioContext();
-            }
-            const bufferSize = audioContext.sampleRate * 0.5; // 0.5 seconds of noise
-            whiteNoiseBuffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
-            const output = whiteNoiseBuffer.getChannelData(0);
-            for (let i = 0; i < bufferSize; i++) {
-                output[i] = Math.random() * 2 - 1; // Random values between -1 and 1
-            }
-        }
-
-        /**
-         * Plays a drum sound (kick, snare, or hi-hat).
-         * @param {string} drumType The type of drum to play ('drums_kick', 'drums_snare', 'drums_hihat').
-         */
-        function playDrum(drumType) {
-            initializeAudioContext();
-            const now = audioContext.currentTime;
-            let gainNode = audioContext.createGain();
-            gainNode.connect(masterGain);
-
-            switch (drumType) {
-                case 'drums_kick':
-                    const kickOsc = audioContext.createOscillator();
-                    kickOsc.type = 'sine';
-                    kickOsc.frequency.setValueAtTime(120, now); // Start frequency
-                    kickOsc.frequency.exponentialRampToValueAtTime(30, now + 0.2); // Decay to low frequency
-                    gainNode.gain.setValueAtTime(1, now);
-                    gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.3); // Quick volume decay
-                    kickOsc.connect(gainNode);
-                    kickOsc.start(now);
-                    kickOsc.stop(now + 0.3);
-                    break;
-                case 'drums_snare':
-                    if (!whiteNoiseBuffer) createWhiteNoiseBuffer();
-                    
-                    // Noise component
-                    const noiseSource = audioContext.createBufferSource();
-                    noiseSource.buffer = whiteNoiseBuffer;
-                    const noiseFilter = audioContext.createBiquadFilter(); // Shape the noise
-                    noiseFilter.type = 'bandpass';
-                    noiseFilter.frequency.setValueAtTime(2000, now);
-                    noiseFilter.Q.setValueAtTime(0.5, now); // Wider bandpass
-                    noiseSource.connect(noiseFilter);
-                    noiseFilter.connect(gainNode);
-
-                    // Tone component
-                    const toneSource = audioContext.createOscillator();
-                    toneSource.type = 'triangle';
-                    toneSource.frequency.setValueAtTime(200, now);
-                    toneSource.connect(gainNode);
-
-                    gainNode.gain.setValueAtTime(0.7, now);
-                    gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.2); // Snare decay
-                    
-                    noiseSource.start(now);
-                    noiseSource.stop(now + 0.2);
-                    toneSource.start(now);
-                    toneSource.stop(now + 0.2);
-                    break;
-                case 'drums_hihat':
-                    if (!whiteNoiseBuffer) createWhiteNoiseBuffer();
-                    const hihatSource = audioContext.createBufferSource();
-                    hihatSource.buffer = whiteNoiseBuffer;
-                    const hihatFilter = audioContext.createBiquadFilter(); // Shape the noise
-                    hihatFilter.type = 'highpass';
-                    hihatFilter.frequency.setValueAtTime(7000, now);
-                    hihatFilter.Q.setValueAtTime(0.5, now);
-                    hihatSource.connect(hihatFilter);
-                    hihatFilter.connect(gainNode);
-
-                    gainNode.gain.setValueAtTime(0.5, now);
-                    gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.1); // Quick hi-hat decay
-                    hihatSource.start(now);
-                    hihatSource.stop(now + 0.1);
-                    break;
-            }
-        }
-
-        /**
-         * Toggles microphone input on and off.
-         * Requests microphone permission if not already granted.
-         * Connects mic input to an analyser for visualization.
-         */
-        async function toggleMicrophone() {
-            initializeAudioContext();
-            const micStatusElem = document.getElementById('micStatus');
-            const toggleMicButton = document.getElementById('toggleMic');
-
-            if (micStream) { // If mic is currently active, stop it
-                micStream.getTracks().forEach(track => track.stop());
-                micStream = null;
-                if (micSource) micSource.disconnect();
-                if (analyser) analyser.disconnect();
-                cancelAnimationFrame(animationFrameId); // Stop visualization
-                micStatusElem.textContent = 'Microphone: Off';
-                toggleMicButton.textContent = 'Start Microphone Input';
-                console.log('Microphone input stopped.');
-                visualizerCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
-                visualizerCtx.fillStyle = '#333';
-                visualizerCtx.fillRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
-            } else { // Start mic
+        // Mic audio
+        if (recMic) {
+            if (!micStream) {
+                // auto-start mic
                 try {
                     micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
                     micSource = audioContext.createMediaStreamSource(micStream);
                     analyser = audioContext.createAnalyser();
-                    analyser.fftSize = 256; // Fast Fourier Transform size
-
+                    analyser.fftSize = 256;
                     micSource.connect(analyser);
-                    // Optional: Uncomment the line below to hear your microphone input through the speakers
-                    // analyser.connect(masterGain); 
-                    
-                    micStatusElem.textContent = 'Microphone: On (Visualizing)';
-                    toggleMicButton.textContent = 'Stop Microphone Input';
-                    console.log('Microphone input started.');
-                    drawVisualizer(); // Start visualizer
-                } catch (err) {
-                    console.error('Error accessing microphone:', err);
-                    micStatusElem.textContent = `Microphone: Error (${err.name})`;
-                    alert('Could not access microphone. Please ensure it is connected and permissions are granted.');
+                    const canvas = document.getElementById('visualizer');
+                    drawViz(analyser, canvas.getContext('2d'), canvas);
+                    document.getElementById('mic-btn').textContent = 'Stop Microphone';
+                    document.getElementById('mic-btn').classList.add('active');
+                    document.getElementById('micStatus').textContent = 'Microphone: On';
+                } catch(e) {
+                    status.textContent = 'Could not open microphone: ' + e.message;
+                    return;
                 }
             }
+            micSource.connect(recordingDest);
         }
 
-        /**
-         * Draws the microphone input's frequency data onto the canvas.
-         */
-        function drawVisualizer() {
-            if (!analyser || !visualizerCtx) return;
+        // Merge streams using AudioContext destination
+        const combinedStream = recordingDest.stream;
+        const mimeType = MediaRecorder.isTypeSupported('audio/webm') ? 'audio/webm' : 'audio/ogg';
+        mediaRecorder = new MediaRecorder(combinedStream, { mimeType });
+        mediaRecorder.ondataavailable = e => { if (e.data.size > 0) recChunks.push(e.data); };
+        mediaRecorder.onstop = () => saveRecording(mimeType);
+        mediaRecorder.start(100);
 
-            animationFrameId = requestAnimationFrame(drawVisualizer);
+        recSeconds = 0;
+        timerEl.style.display = 'inline';
+        timerEl.textContent = '00:00';
+        recTimer = setInterval(() => {
+            recSeconds++;
+            timerEl.textContent = formatTime(recSeconds);
+        }, 1000);
 
-            const bufferLength = analyser.frequencyBinCount; // Number of data points (fftSize/2)
-            const dataArray = new Uint8Array(bufferLength); // Array to hold the data
-            analyser.getByteFrequencyData(dataArray); // Fills dataArray with frequency data
+        btn.classList.add('recording');
+        label.textContent = 'Stop Recording';
+        status.textContent = 'Recording... Play your instrument!';
+    }
+}
 
-            visualizerCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
-            visualizerCtx.fillStyle = '#333'; // Background color of the visualizer
-            visualizerCtx.fillRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
+function saveRecording(mimeType) {
+    recCount++;
+    const blob = new Blob(recChunks, { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const ext = mimeType.includes('webm') ? 'webm' : 'ogg';
+    const name = `recording_${recCount}_${formatTime(recSeconds)}.${ext}`;
 
-            const barWidth = (visualizerCanvas.width / bufferLength) * 2.5; // Adjust bar width for visual appeal
-            let x = 0;
+    const list = document.getElementById('recordings-list');
+    const item = document.createElement('div');
+    item.className = 'recording-item';
+    item.innerHTML = `
+        <span class="rec-name">${name}</span>
+        <audio controls src="${url}"></audio>
+        <a class="dl-btn" href="${url}" download="${name}">⬇ Download</a>
+    `;
+    list.prepend(item);
+    document.getElementById('rec-status').textContent = `Recording saved! (${formatTime(recSeconds)})`;
+}
 
-            for (let i = 0; i < bufferLength; i++) {
-                const barHeight = dataArray[i] / 2; // Scale height for visualization
-                visualizerCtx.fillStyle = `rgb(${barHeight + 100}, 50, 50)`; // Color based on amplitude
-                visualizerCtx.fillRect(x, visualizerCanvas.height - barHeight, barWidth, barHeight);
-                x += barWidth + 1; // Space between bars
-            }
-        }
+// ═══════════════════════════════════════════════════
+//  EVENT SETUP
+// ═══════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+    const keys = document.querySelectorAll('.key');
 
+    // ── Key play (mouse + touch) ──
+    keys.forEach((key, idx) => {
+        const startPlay = (e) => {
+            if (e.target.classList.contains('key-label')) return; // editing
+            e.preventDefault();
+            if (key.classList.contains('active-play')) return;
+            const note = getKeyNote(idx);
+            if (activeInstrument.startsWith('drums_')) playDrum(activeInstrument);
+            else playNote(note);
+            key.classList.add('active-play');
+        };
+        const endPlay = () => {
+            const note = getKeyNote(idx);
+            if (!activeInstrument.startsWith('drums_')) stopNote(note);
+            key.classList.remove('active-play');
+        };
+        key.addEventListener('mousedown', startPlay);
+        key.addEventListener('mouseup', endPlay);
+        key.addEventListener('mouseleave', endPlay);
+        key.addEventListener('touchstart', startPlay, { passive: false });
+        key.addEventListener('touchend', endPlay, { passive: false });
+        key.addEventListener('touchcancel', endPlay, { passive: false });
+    });
 
-        // --- Event Listeners and Setup ---
-        document.addEventListener('DOMContentLoaded', () => {
-            // Set up visualizer canvas context
-            visualizerCanvas = document.getElementById('visualizer');
-            visualizerCtx = visualizerCanvas.getContext('2d');
-            visualizerCtx.fillStyle = '#333';
-            visualizerCtx.fillRect(0, 0, visualizerCanvas.width, visualizerCanvas.height); // Initial clear
-
-            // Master volume control
-            const masterVolume = document.getElementById('masterVolume');
-            masterVolume.addEventListener('input', () => {
-                initializeAudioContext(); // Ensure context is awake when user interacts
-                if (masterGain) {
-                    masterGain.gain.value = parseFloat(masterVolume.value);
-                }
-            });
-
-            // Instrument selection buttons
-            document.querySelectorAll('.instrument-button').forEach(button => {
-                button.addEventListener('click', () => {
-                    // Remove 'active' class from previously active button
-                    document.querySelector('.instrument-button.active')?.classList.remove('active');
-                    button.classList.add('active'); // Add 'active' to clicked button
-                    activeInstrument = button.dataset.instrument;
-                    console.log(`Active instrument: ${activeInstrument}`);
-                });
-            });
-
-            // Virtual keyboard (mouse/touch events)
-            const keys = document.querySelectorAll('.key');
-            keys.forEach(key => {
-                const note = key.dataset.note;
-
-                const startPlay = (e) => {
-                    e.preventDefault(); // Prevent text selection, scrolling on touch
-                    // Prevent re-triggering if already playing from a sustained press
-                    if (key.classList.contains('active-play')) return; 
-
-                    if (activeInstrument.startsWith('drums_')) {
-                        playDrum(activeInstrument);
-                    } else {
-                        playNote(note, activeInstrument);
-                    }
-                    key.classList.add('active-play');
-                };
-
-                const endPlay = () => {
-                    if (!activeInstrument.startsWith('drums_')) { // Drums are one-shot, no stop
-                        stopNote(note, activeInstrument);
-                    }
-                    key.classList.remove('active-play');
-                };
-
-                key.addEventListener('mousedown', startPlay);
-                key.addEventListener('mouseup', endPlay);
-                key.addEventListener('mouseleave', endPlay); // If mouse drags off key while pressed
-
-                // For touch devices (passive: false for preventDefault)
-                key.addEventListener('touchstart', startPlay, { passive: false });
-                key.addEventListener('touchend', endPlay, { passive: false });
-                key.addEventListener('touchcancel', endPlay, { passive: false });
-            });
-
-
-            // Physical keyboard input mapping
-            const keyMap = {
-                // White keys (bottom row of QWERTY)
-                'a': 'C4', 's': 'D4', 'd': 'E4', 'f': 'F4', 'g': 'G4', 'h': 'A4', 'j': 'B4',
-                'k': 'C5', 'l': 'D5', ';': 'E5', // For QWERTY keyboards
-
-                // Black keys (top row of QWERTY, shifted)
-                'w': 'C#4', 'e': 'D#4', 't': 'F#4', 'y': 'G#4', 'u': 'A#4', 'o': 'C#5', 'p': 'D#5',
-
-                // Drum triggers
-                'z': 'drums_kick', 'x': 'drums_snare', 'c': 'drums_hihat'
-            };
-            const pressedKeys = new Set(); // Track currently pressed physical keys to prevent repeat triggering
-
-            document.addEventListener('keydown', (e) => {
-                const mappedInput = keyMap[e.key.toLowerCase()];
-                if (mappedInput && !pressedKeys.has(e.key.toLowerCase())) {
-                    e.preventDefault(); // Prevent default browser actions (e.g., scrolling with spacebar, 'd' for bookmarks)
-                    pressedKeys.add(e.key.toLowerCase());
-
-                    // Visual feedback for physical key press
-                    const correspondingKeyElement = document.querySelector(`.key[data-note="${mappedInput}"]`);
-                    if (correspondingKeyElement) {
-                        correspondingKeyElement.classList.add('active-play');
-                    } else if (mappedInput.startsWith('drums_')) {
-                        // Highlight the active instrument button for drums if played via keyboard
-                        const drumButton = document.querySelector(`[data-instrument="${mappedInput}"]`);
-                        if (drumButton) drumButton.classList.add('active-play');
-                    }
-
-                    // Play sound
-                    if (mappedInput.startsWith('drums_')) {
-                        playDrum(mappedInput);
-                    } else {
-                        playNote(mappedInput, activeInstrument);
-                    }
-                }
-            });
-
-            document.addEventListener('keyup', (e) => {
-                const mappedInput = keyMap[e.key.toLowerCase()];
-                if (mappedInput && pressedKeys.has(e.key.toLowerCase())) {
-                    pressedKeys.delete(e.key.toLowerCase());
-
-                    // Remove visual feedback
-                    const correspondingKeyElement = document.querySelector(`.key[data-note="${mappedInput}"]`);
-                    if (correspondingKeyElement) {
-                        correspondingKeyElement.classList.remove('active-play');
-                    } else if (mappedInput.startsWith('drums_')) {
-                        const drumButton = document.querySelector(`[data-instrument="${mappedInput}"]`);
-                        if (drumButton) drumButton.classList.remove('active-play');
-                    }
-
-                    // Stop note (only for sustained instruments)
-                    if (!mappedInput.startsWith('drums_')) {
-                        stopNote(mappedInput, activeInstrument);
-                    }
-                }
-            });
-
-            // Microphone input toggle button
-            document.getElementById('toggleMic').addEventListener('click', toggleMicrophone);
-
-            // Important: Wake up/initialize AudioContext on first user interaction
-            // Browsers prevent autoplaying audio, so context must be created/resumed on user gesture.
-            const wakeAudio = () => {
-                initializeAudioContext();
-                if (audioContext && audioContext.state === 'suspended') {
-                    audioContext.resume().then(() => {
-                        console.log('AudioContext resumed successfully.');
-                    }).catch(err => console.error('Error resuming AudioContext:', err));
-                }
-                document.documentElement.removeEventListener('mousedown', wakeAudio);
-                document.documentElement.removeEventListener('keydown', wakeAudio);
-                document.documentElement.removeEventListener('touchstart', wakeAudio);
-            };
-            document.documentElement.addEventListener('mousedown', wakeAudio, { once: true });
-            document.documentElement.addEventListener('keydown', wakeAudio, { once: true });
-            document.documentElement.addEventListener('touchstart', wakeAudio, { once: true });
+    // ── Editable labels: select all on focus ──
+    document.querySelectorAll('.key-label').forEach(input => {
+        input.addEventListener('focus', () => input.select());
+        input.addEventListener('keydown', e => {
+            if (e.key === 'Enter') { input.blur(); e.stopPropagation(); }
         });
-    </script>
+        // When user edits a label, break the link to DEFAULT_NOTES for that key
+        // (transpose will still use base + offset logic if reset)
+        input.addEventListener('change', () => {
+            const val = input.value.trim().toUpperCase().replace(/([A-G]#?)(\d)/, '$1$2');
+            input.value = val;
+            // Update DEFAULT_NOTES offset tracking
+            const idx = parseInt(input.closest('.key').dataset.keyIndex);
+            DEFAULT_NOTES[idx] = shiftNote(val, -semitoneOffset);
+        });
+    });
+
+    // ── Physical keyboard ──
+    document.addEventListener('keydown', (e) => {
+        // Don't hijack when editing a label input
+        if (e.target.classList.contains('key-label')) return;
+        const char = e.key.toLowerCase();
+        const idx = charToIdx[char];
+        if (idx !== undefined && !pressedKeys.has(char)) {
+            e.preventDefault();
+            pressedKeys.add(char);
+            const key = keys[idx];
+            key.classList.add('active-play');
+            const note = getKeyNote(idx);
+            if (activeInstrument.startsWith('drums_')) playDrum(activeInstrument);
+            else playNote(note);
+        }
+    });
+
+    document.addEventListener('keyup', (e) => {
+        if (e.target.classList.contains('key-label')) return;
+        const char = e.key.toLowerCase();
+        const idx = charToIdx[char];
+        if (idx !== undefined && pressedKeys.has(char)) {
+            pressedKeys.delete(char);
+            const key = keys[idx];
+            key.classList.remove('active-play');
+            const note = getKeyNote(idx);
+            if (!activeInstrument.startsWith('drums_')) stopNote(note);
+        }
+    });
+
+    // ── Instruments ──
+    document.querySelectorAll('.instrument-button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelector('.instrument-button.active')?.classList.remove('active');
+            btn.classList.add('active');
+            activeInstrument = btn.dataset.instrument;
+        });
+    });
+
+    // ── Volume ──
+    document.getElementById('masterVolume').addEventListener('input', (e) => {
+        initAudio();
+        if (masterGain) masterGain.gain.value = parseFloat(e.target.value);
+    });
+
+    // ── Transpose ──
+    document.getElementById('btn-up').addEventListener('click', () => applyTranspose(1));
+    document.getElementById('btn-down').addEventListener('click', () => applyTranspose(-1));
+    document.getElementById('btn-reset').addEventListener('click', resetTranspose);
+
+    // ── Mic ──
+    document.getElementById('mic-btn').addEventListener('click', toggleMic);
+
+    // ── Recording ──
+    document.getElementById('rec-btn').addEventListener('click', toggleRecording);
+
+    // ── Wake AudioContext on first gesture ──
+    const wake = () => { initAudio(); };
+    document.addEventListener('mousedown', wake, { once: true });
+    document.addEventListener('keydown', wake, { once: true });
+    document.addEventListener('touchstart', wake, { once: true });
+});
+</script>
 </body>
 </html>
